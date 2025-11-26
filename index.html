@@ -1,4 +1,91 @@
-<HTML>
-<BODY>
-Hello, World!
-</HTML>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Datos de Personajes</title>
+</head>
+<body>
+
+    <h1>Base de Datos de Personajes</h1>
+    <hr>
+
+    <section id="seccion-formulario">
+        <h2>Ingresar Nuevo Personaje</h2>
+        <form id="form-personaje">
+            
+            <label>Nombre Completo:</label><br>
+            <input type="text" id="inp-nombre" required><br><br>
+
+            <label>Edad:</label><br>
+            <input type="number" id="inp-edad"><br><br>
+
+            <label>Raza:</label><br>
+            <input type="text" id="inp-raza"><br><br>
+
+            <label>Altura (CM):</label><br>
+            <input type="number" id="inp-altura"><br><br>
+
+            <label>Peso (KL):</label><br> <input type="number" id="inp-peso"><br><br>
+
+            <label>Fecha de Nacimiento:</label><br>
+            <input type="date" id="inp-fecha"><br><br>
+
+            <label>Clase:</label><br>
+            <input type="text" id="inp-clase"><br><br>
+
+            <label>Profesión:</label><br>
+            <input type="text" id="inp-profesion"><br><br>
+
+            <label>Rol / Universo:</label><br>
+            <select id="inp-rol">
+                <option value="">Cargando roles...</option>
+            </select><br><br>
+
+            <label>Creador:</label><br>
+            <input type="text" id="inp-creador"><br><br>
+
+            <label>¿Está vivo?:</label>
+            <input type="checkbox" id="inp-vive" checked><br><br>
+
+            <label>Historia:</label><br>
+            <textarea id="inp-historia" rows="5" style="width: 300px;"></textarea><br><br>
+
+            <button type="submit">Guardar en Base de Datos</button>
+        </form>
+    </section>
+
+    <hr>
+
+    <section id="seccion-busqueda">
+        <h2>Buscador y Filtros</h2>
+        
+        <input type="text" id="busqueda-texto" placeholder="Buscar por nombre..." style="width: 300px; padding: 5px;">
+        
+        <select id="filtro-rol">
+            <option value="todos">Todos los Roles</option>
+            </select>
+
+        <select id="filtro-estado">
+            <option value="todos">Estado: Todos</option>
+            <option value="vivo">Solo Vivos</option>
+            <option value="muerto">Solo Muertos</option>
+        </select>
+
+        <button onclick="aplicarFiltros()">Buscar</button>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>Lista de Personajes</h2>
+        <div id="lista-personajes">
+            <p>Cargando...</p>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="env.js"></script> <script src="app.js"></script>
+
+</body>
+</html>
