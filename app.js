@@ -8,7 +8,7 @@ let baseDeDatosLocal = [
         rol: "Protagonista",
         creador: "Admin",
         vivo: true,
-        historia: "Un guerrero de prueba para ver cómo queda la lista."
+        historia: "Un guerrero de prueba."
     },
     {
         nombre: "Ejemplo Mago",
@@ -18,15 +18,30 @@ let baseDeDatosLocal = [
         rol: "Secundario",
         creador: "Admin",
         vivo: false,
-        historia: "Un mago antiguo que falleció en la gran guerra."
+        historia: "Un mago antiguo."
+    },
+    {
+        nombre: "Zombi de Prueba",
+        raza: "No-Muerto",
+        edad: 12, // Años de muerto
+        clase: "Monstruo",
+        rol: "NPC",
+        creador: "Admin",
+        vivo: false,
+        historia: "Solo camina y gruñe."
     }
 ];
 
 // REFERENCIAS AL HTML
 const listaHTML = document.getElementById('lista-personajes');
 const form = document.getElementById('form-personaje');
+// Referencias de Filtros
+const inputBusqueda = document.getElementById('busqueda-texto');
+const selectRol = document.getElementById('filtro-rol');
+const selectEstado = document.getElementById('filtro-estado');
+const selectOrden = document.getElementById('ordenar-resultados');
 
-// --- 1. FUNCIÓN PARA MOSTRAR PERSONAJES ---
+// --- 1. FUNCIÓN PARA MOSTRAR PERSONAJES (VISTA) ---
 function mostrarPersonajes(listaDeDatos) {
     listaHTML.innerHTML = ""; // Limpiar lista actual
 
@@ -37,18 +52,15 @@ function mostrarPersonajes(listaDeDatos) {
 
     // Recorremos los datos y creamos las "tarjetas"
     listaDeDatos.forEach(p => {
-        // Determinamos estado
-        const estadoTexto = p.vivo ? "Vivo" : "Muerto 💀";
-        
-        // Creamos el elemento visual
+        const estadoTexto = p.vivo ? "Vivo 💚" : "Muerto 💀";
         const tarjeta = document.createElement('div');
         
-        // Estilo básico en línea para que se distinga (ya que no usamos CSS externo aún)
+        // Estilo básico
         tarjeta.style.border = "1px solid #ccc";
         tarjeta.style.padding = "15px";
         tarjeta.style.marginBottom = "10px";
         tarjeta.style.borderRadius = "8px";
-        tarjeta.style.backgroundColor = "#f9f9f9";
+        tarjeta.style.backgroundColor = p.vivo ? "#f9fff9" : "#fff0f0"; // Fondo verde suave si vive, rojo suave si muere
 
         tarjeta.innerHTML = `
             <h3 style="margin-top: 0;">${p.nombre} <small style="color: blue;">(${p.rol})</small></h3>
@@ -56,7 +68,6 @@ function mostrarPersonajes(listaDeDatos) {
             <p><strong>Estado:</strong> ${estadoTexto}</p>
             <p><strong>Creador:</strong> ${p.creador}</p>
             <p><em>"${p.historia}"</em></p>
-            <hr>
         `;
         
         listaHTML.appendChild(tarjeta);
@@ -65,9 +76,8 @@ function mostrarPersonajes(listaDeDatos) {
 
 // --- 2. FUNCIÓN PARA AGREGAR NUEVO (GUARDAR) ---
 form.addEventListener('submit', function(e) {
-    e.preventDefault(); // Evita que se recargue la página
+    e.preventDefault(); 
 
-    // Capturamos los datos del formulario
     const nuevoPj = {
         nombre: document.getElementById('inp-nombre').value,
         raza: document.getElementById('inp-raza').value,
@@ -83,44 +93,39 @@ form.addEventListener('submit', function(e) {
         historia: document.getElementById('inp-historia').value
     };
 
-    // Lo guardamos en nuestro array local
-    baseDeDatosLocal.unshift(nuevoPj); // 'unshift' lo pone al principio de la lista
-
-    // Limpiamos el formulario
-    form.reset();
-
-    // Actualizamos la vista
-    alert("Personaje agregado temporalmente (Local)");
-    aplicarFiltros(); // Para que se muestre en la lista
+    baseDeDatosLocal.unshift(nuevoPj); // Agregar al inicio
+    form.reset(); // Limpiar formulario
+    alert("Personaje agregado correctamente.");
+    aplicarFiltros(); // Actualizar lista
 });
 
-// --- 3. FUNCIÓN DE BÚSQUEDA Y FILTROS ---
-const inputBusqueda = document.getElementById('busqueda-texto');
-const selectRol = document.getElementById('filtro-rol');
-const selectEstado = document.getElementById('filtro-estado');
+// --- 3. LÓGICA CENTRAL: FILTRAR Y ORDENAR ---
 
-// Escuchamos cambios en los 3 filtros
+// Escuchamos cambios en TODOS los controles
 inputBusqueda.addEventListener('input', aplicarFiltros);
 selectRol.addEventListener('change', aplicarFiltros);
 selectEstado.addEventListener('change', aplicarFiltros);
+selectOrden.addEventListener('change', aplicarFiltros);
 
 function aplicarFiltros() {
+    // A. Capturar valores
     const texto = inputBusqueda.value.toLowerCase();
     const rolSeleccionado = selectRol.value;
     const estadoSeleccionado = selectEstado.value;
+    const ordenSeleccionado = selectOrden.value;
 
-    // Filtramos la base de datos local
-    const resultados = baseDeDatosLocal.filter(p => {
-        // 1. Filtro Texto (Nombre)
-        const coincideNombre = p.nombre.toLowerCase().includes(texto);
+    // B. FILTRAR (Quitar lo que no coincide)
+    let resultados = baseDeDatosLocal.filter(p => {
+        // Filtro Texto
+        const coincideNombre = (p.nombre || "").toLowerCase().includes(texto);
         
-        // 2. Filtro Rol
+        // Filtro Rol
         let coincideRol = true;
         if (rolSeleccionado !== "todos") {
             coincideRol = p.rol === rolSeleccionado;
         }
 
-        // 3. Filtro Estado
+        // Filtro Estado
         let coincideEstado = true;
         if (estadoSeleccionado !== "todos") {
             if (estadoSeleccionado === "vivo" && !p.vivo) coincideEstado = false;
@@ -130,9 +135,36 @@ function aplicarFiltros() {
         return coincideNombre && coincideRol && coincideEstado;
     });
 
-    // Mostramos los resultados filtrados
+    // C. ORDENAR (Acomodar lo que quedó)
+    resultados.sort((a, b) => {
+        switch (ordenSeleccionado) {
+            case 'nombre-asc':
+                return (a.nombre || "").localeCompare(b.nombre || "");
+            
+            case 'nombre-desc':
+                return (b.nombre || "").localeCompare(a.nombre || "");
+
+            case 'edad-asc':
+                return (Number(a.edad) || 0) - (Number(b.edad) || 0);
+
+            case 'edad-desc':
+                return (Number(b.edad) || 0) - (Number(a.edad) || 0);
+            
+            case 'raza':
+                return (a.raza || "").localeCompare(b.raza || "");
+
+            case 'vivo':
+                // true (1) va antes que false (0)
+                return (a.vivo === b.vivo) ? 0 : a.vivo ? -1 : 1;
+
+            default:
+                return 0;
+        }
+    });
+
+    // D. Mostrar el resultado final
     mostrarPersonajes(resultados);
 }
 
-// INICIAR AL CARGAR LA PÁGINA
-mostrarPersonajes(baseDeDatosLocal);
+// INICIAR AL CARGAR
+aplicarFiltros();

@@ -26,7 +26,8 @@
             <label>Altura (CM):</label><br>
             <input type="number" id="inp-altura"><br><br>
 
-            <label>Peso (KL):</label><br> <input type="number" id="inp-peso"><br><br>
+            <label>Peso (KL):</label><br> 
+            <input type="number" id="inp-peso"><br><br>
 
             <label>Fecha de Nacimiento:</label><br>
             <input type="date" id="inp-fecha"><br><br>
@@ -39,7 +40,11 @@
 
             <label>Rol / Universo:</label><br>
             <select id="inp-rol">
-                <option value="">Cargando roles...</option>
+                <option value="">-- Selecciona --</option>
+                <option value="Protagonista">Protagonista</option>
+                <option value="Antagonista">Antagonista</option>
+                <option value="Secundario">Secundario</option>
+                <option value="NPC">NPC</option>
             </select><br><br>
 
             <label>Creador:</label><br>
@@ -60,16 +65,29 @@
     <section id="seccion-busqueda">
         <h2>Buscador y Filtros</h2>
         
-        <input type="text" id="busqueda-texto" placeholder="Buscar por nombre..." style="width: 300px; padding: 5px;">
+        <input type="text" id="busqueda-texto" placeholder="Buscar por nombre..." style="width: 200px; padding: 5px;">
         
-        <select id="filtro-rol">
+        <select id="filtro-rol" style="padding: 5px;">
             <option value="todos">Todos los Roles</option>
-            </select>
+            <option value="Protagonista">Protagonista</option>
+            <option value="Antagonista">Antagonista</option>
+            <option value="Secundario">Secundario</option>
+            <option value="NPC">NPC</option>
+        </select>
 
-        <select id="filtro-estado">
+        <select id="filtro-estado" style="padding: 5px;">
             <option value="todos">Estado: Todos</option>
             <option value="vivo">Solo Vivos</option>
             <option value="muerto">Solo Muertos</option>
+        </select>
+
+        <select id="ordenar-resultados" style="padding: 5px; font-weight: bold; color: #333;">
+            <option value="nombre-asc">🔤 Nombre (A-Z)</option>
+            <option value="nombre-desc">🔤 Nombre (Z-A)</option>
+            <option value="edad-asc">👶 Edad (Menor a Mayor)</option>
+            <option value="edad-desc">👴 Edad (Mayor a Menor)</option>
+            <option value="raza">👽 Raza (A-Z)</option>
+            <option value="vivo">❤️ Estado (Vivos primero)</option>
         </select>
 
         <button onclick="aplicarFiltros()">Buscar</button>
@@ -84,8 +102,7 @@
         </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="env.js"></script> <script src="app.js"></script>
+    <script src="app.js"></script>
 
 </body>
 </html>
